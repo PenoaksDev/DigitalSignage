@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import co.applebloom.apps.signage.rendering.ChiHTMLEditorKit;
+import co.applebloom.apps.signage.server.Server;
 
 public class ScreenFrame extends JFrame implements Cloneable
 {
@@ -41,14 +42,6 @@ public class ScreenFrame extends JFrame implements Cloneable
 		{
 			setLoadingText( "Searching for the Display Package" );
 			
-			getContentPane().add( new JScrollPane( edit ), BorderLayout.CENTER );
-			
-			String htmlText = "<html>\n" + "<body>\n" + "<p>\n" + "Text before button\n" + "<button>Button Text</button>\n" + "Text after button\n" + "</p>\n" + "</body>\n" + "</html>";
-			
-			edit.setEditable( false );
-			edit.setEditorKit( new ChiHTMLEditorKit() );
-			edit.setText( htmlText );
-			
 			// Just temporary.
 			Thread.sleep( 1000 );
 			
@@ -63,6 +56,19 @@ public class ScreenFrame extends JFrame implements Cloneable
 			setLoadingText( "Done" );
 			
 			Thread.sleep( 1000 );
+			
+			
+			
+			getContentPane().add( new JScrollPane( edit ), BorderLayout.CENTER );
+			
+			// Get page from the built-in resin server which means PHP is executed and can access Java methods.
+			String htmlText = Server.getResinServer().request( "GET /demo.php" );
+			
+			edit.setEditable( false );
+			edit.setEditorKit( new ChiHTMLEditorKit() );
+			edit.setText( htmlText );
+			
+			
 			
 			loadingScreen( false );
 		}
@@ -101,6 +107,35 @@ public class ScreenFrame extends JFrame implements Cloneable
 		else
 		{
 			loadingComponent.setText( "Initalizing Digital Signage... " + str + "..." );
+		}
+	}
+	
+	public void setFullscreen()
+	{
+		setFullscreen( 0, true );
+	}
+	
+	public void setFullscreen( int index )
+	{
+		setFullscreen( index, true );
+	}
+	
+	public void setFullscreen( boolean yes )
+	{
+		setFullscreen( 0, yes );
+	}
+	
+	public void setFullscreen( int index, boolean yes )
+	{
+		try
+		{
+			GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice[] devices = g.getScreenDevices();
+			devices[index].setFullScreenWindow( yes ? this : null );
+		}
+		catch ( ArrayIndexOutOfBoundsException e )
+		{
+			System.err.println( "We tried to create a display on monitor #" + index + " which returned an ArrayIndexOutOfBounds, FAILED!" );
 		}
 	}
 	

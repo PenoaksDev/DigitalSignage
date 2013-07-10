@@ -7,11 +7,11 @@ import com.caucho.resin.WebAppEmbed;
 
 public class Server
 {
+	private final static ResinEmbed resin = new ResinEmbed();
+	
 	public Server()
 	{
 		ServiceBean service = new ServiceBean();
-		
-		ResinEmbed resin = new ResinEmbed();
 		
 		resin.addBean(new BeanEmbed(service, "signage"));
 		
@@ -23,5 +23,10 @@ public class Server
 		
 		resin.start();
 		resin.join();
+	}
+	
+	public static ResinEmbed getResinServer()
+	{
+		return resin;
 	}
 }

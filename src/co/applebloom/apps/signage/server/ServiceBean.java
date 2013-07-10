@@ -5,6 +5,6 @@ public class ServiceBean implements IService
 	@Override
 	public String hello()
 	{
-		return "Hello World";
+		return "Hello, Rainbow Dash!!! :D";
 	}
 }
