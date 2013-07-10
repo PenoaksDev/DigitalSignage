@@ -1,0 +1,5 @@
+general:
+    mode: server
+    bindIp: 0.0.0.0
+    bindPort: 6969
+    server: 0.0.0.0
