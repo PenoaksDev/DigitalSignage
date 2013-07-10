@@ -1,5 +1,7 @@
 package co.applebloom.apps.signage;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import co.applebloom.apps.signage.components.ScreenFrame;
 
 public class Main
@@ -23,5 +25,11 @@ public class Main
 		//frame2.setVisible( true );
 		
 		frame.initDisplay();
+		
+		//Fullscreen code
+		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] devices = g.getScreenDevices();
+		
+		devices[0 /*index*/ ].setFullScreenWindow(frame);
 	}
 }
