@@ -21,6 +21,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 
 import sun.awt.AppContext;
 
+@SuppressWarnings( "serial" )
 public class ChiHTMLEditorKit extends HTMLEditorKit
 {
 	
@@ -101,6 +102,7 @@ public class ChiHTMLEditorKit extends HTMLEditorKit
 	}
 }
 
+@SuppressWarnings( "serial" )
 class ChiHTMLDocument extends HTMLDocument
 {
 	public ChiHTMLDocument(StyleSheet styles)

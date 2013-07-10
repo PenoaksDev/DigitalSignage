@@ -3,12 +3,9 @@ package co.applebloom.apps.signage.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
@@ -40,20 +37,39 @@ public class ScreenFrame extends JFrame implements Cloneable
 	
 	public void initDisplay()
 	{
-		setLoadingText( "Searching for the Display Package" );
-		
-		getContentPane().add( new JScrollPane( edit ), BorderLayout.CENTER );
-		
-		String htmlText = "<html>\n" + "<body>\n" + "<p>\n" + "Text before button\n" + "<button>Button Text</button>\n" + "Text after button\n" + "</p>\n" + "</body>\n" + "</html>";
-		
-		edit.setEditable( false );
-		edit.setEditorKit( new ChiHTMLEditorKit() );
-		edit.setText( htmlText );
-		
-		
-		setLoadingText( "DONE" );
-		
-		loadingScreen( false );
+		try
+		{
+			setLoadingText( "Searching for the Display Package" );
+			
+			getContentPane().add( new JScrollPane( edit ), BorderLayout.CENTER );
+			
+			String htmlText = "<html>\n" + "<body>\n" + "<p>\n" + "Text before button\n" + "<button>Button Text</button>\n" + "Text after button\n" + "</p>\n" + "</body>\n" + "</html>";
+			
+			edit.setEditable( false );
+			edit.setEditorKit( new ChiHTMLEditorKit() );
+			edit.setText( htmlText );
+			
+			// Just temporary.
+			Thread.sleep( 1000 );
+			
+			setLoadingText( "Found and Unpackaging" );
+			
+			Thread.sleep( 1000 );
+			
+			setLoadingText( "Preparing Display" );
+			
+			Thread.sleep( 1000 );
+			
+			setLoadingText( "Done" );
+			
+			Thread.sleep( 1000 );
+			
+			loadingScreen( false );
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	private void createLoadingScreen()
@@ -111,7 +127,7 @@ public class ScreenFrame extends JFrame implements Cloneable
 		return devices[index].getDefaultConfiguration().getBounds();
 	}
 	
-	public static int getNumberOfScreens()
+	public static int getNumberOfMonitors()
 	{
 		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		return g.getScreenDevices().length;
