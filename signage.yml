@@ -1,0 +1,11 @@
+general:
+  mode: dual
+  ip: 0.0.0.0
+  port: '8080'
+display:
+  screenA:
+    source: default/screenA
+    id: 0
+  screenB:
+    source: default/screenB
+    id: 1

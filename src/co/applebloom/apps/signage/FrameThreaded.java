@@ -6,13 +6,15 @@ public class FrameThreaded extends Thread
 {
 	private final ScreenFrame frame;
 	private final int index;
+	private final String screenSource;
 	
-	public FrameThreaded( final int index )
+	public FrameThreaded( final int index, String screenSource )
 	{
 		super();
 		
 		this.index = index;
 		frame = new ScreenFrame();
+		this.screenSource = screenSource;
 		setName( "Running Thread for Frame on Monitor #" + index );
 		start();
 	}
@@ -27,6 +29,6 @@ public class FrameThreaded extends Thread
 	{
 		frame.setVisible( true );
 		frame.setFullscreen( index );
-		frame.initDisplay();
+		frame.initDisplay( screenSource );
 	}
 }

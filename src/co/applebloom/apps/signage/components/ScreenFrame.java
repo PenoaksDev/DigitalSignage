@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.io.IOException;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
@@ -14,9 +16,13 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import co.applebloom.apps.signage.rendering.ChiHTMLEditorKit;
+import co.applebloom.apps.signage.rendering.HTMLElement;
 import co.applebloom.apps.signage.server.Server;
 
-public class ScreenFrame extends JFrame implements Cloneable
+import com.impetus.annovention.ClasspathDiscoverer;
+import com.impetus.annovention.Discoverer;
+
+public class ScreenFrame extends JFrame
 {
 	private static final long serialVersionUID = -8415026498095675707L;
 	
@@ -31,12 +37,22 @@ public class ScreenFrame extends JFrame implements Cloneable
 		setUndecorated( true );
 		setScreen( 0 );
 		
+		Discoverer discoverer = new ClasspathDiscoverer();
+		discoverer.addAnnotationListener( new ClassAnnotationDiscovery() );
+		discoverer.discover();
+		
 		setBackground( Color.WHITE );
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		loadingScreen( true );
 	}
 	
-	public void initDisplay()
+	public String getPage( String packSource ) throws IOException
+	{
+		// Get page from the built-in resin server which means PHP is executed and can access Java methods.
+		return Server.getResinServer().request( "GET /packs/" + packSource + "/source.php" );
+	}
+	
+	public void initDisplay( String packSource )
 	{
 		try
 		{
@@ -57,18 +73,10 @@ public class ScreenFrame extends JFrame implements Cloneable
 			
 			Thread.sleep( 1000 );
 			
-			
-			
 			getContentPane().add( new JScrollPane( edit ), BorderLayout.CENTER );
-			
-			// Get page from the built-in resin server which means PHP is executed and can access Java methods.
-			String htmlText = Server.getResinServer().request( "GET /demo.php" );
-			
 			edit.setEditable( false );
 			edit.setEditorKit( new ChiHTMLEditorKit() );
-			edit.setText( htmlText );
-			
-			
+			edit.setText( getPage( packSource ) );
 			
 			loadingScreen( false );
 		}
@@ -166,14 +174,5 @@ public class ScreenFrame extends JFrame implements Cloneable
 	{
 		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		return g.getScreenDevices().length;
-	}
-	
-	// TODO: Finish this
-	@Override
-	public ScreenFrame clone() throws CloneNotSupportedException
-	{
-		ScreenFrame sf = (ScreenFrame) super.clone();
-		
-		return sf;
 	}
 }

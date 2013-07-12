@@ -1,5 +1,4 @@
 general:
-    mode: server
-    bindIp: 0.0.0.0
-    bindPort: 6969
-    server: 0.0.0.0
+    mode: dual
+    ip: 0.0.0.0
+    port: 6969

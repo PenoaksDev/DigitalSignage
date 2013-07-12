@@ -3,6 +3,7 @@ package co.applebloom.apps.signage.rendering;
 import java.awt.Component;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.text.BadLocationException;
@@ -20,10 +21,12 @@ import javax.swing.text.html.parser.DTD;
 import javax.swing.text.html.parser.ParserDelegator;
 
 import sun.awt.AppContext;
+import co.applebloom.apps.signage.tag.DSTag;
 
 @SuppressWarnings( "serial" )
 public class ChiHTMLEditorKit extends HTMLEditorKit
 {
+	HashMap<String, DSTag> registeredTags = new HashMap<String, DSTag>();
 	
 	public ChiHTMLEditorKit()
 	{
@@ -73,7 +76,6 @@ public class ChiHTMLEditorKit extends HTMLEditorKit
 			
 			if ( kind instanceof HTML.UnknownTag && element.getName().equals( "button" ) )
 			{
-				
 				return new ComponentView( element )
 				{
 					protected Component createComponent()
