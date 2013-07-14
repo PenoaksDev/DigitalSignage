@@ -5,7 +5,7 @@ general:
 display:
   screenA:
     source: default/screenA
-    id: 0
+    id: 1
   screenB:
     source: default/screenB
-    id: 1
+    id: 2

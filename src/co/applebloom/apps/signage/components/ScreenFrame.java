@@ -16,8 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import co.applebloom.apps.signage.rendering.ChiHTMLEditorKit;
-import co.applebloom.apps.signage.rendering.HTMLElement;
 import co.applebloom.apps.signage.server.Server;
+import co.applebloom.apps.signage.tag.HTMLElement;
 
 import com.impetus.annovention.ClasspathDiscoverer;
 import com.impetus.annovention.Discoverer;
@@ -37,10 +37,6 @@ public class ScreenFrame extends JFrame
 		setUndecorated( true );
 		setScreen( 0 );
 		
-		Discoverer discoverer = new ClasspathDiscoverer();
-		discoverer.addAnnotationListener( new ClassAnnotationDiscovery() );
-		discoverer.discover();
-		
 		setBackground( Color.WHITE );
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		loadingScreen( true );
@@ -56,27 +52,27 @@ public class ScreenFrame extends JFrame
 	{
 		try
 		{
-			setLoadingText( "Searching for the Display Package" );
-			
-			// Just temporary.
-			Thread.sleep( 1000 );
-			
-			setLoadingText( "Found and Unpackaging" );
-			
-			Thread.sleep( 1000 );
-			
-			setLoadingText( "Preparing Display" );
-			
-			Thread.sleep( 1000 );
-			
-			setLoadingText( "Done" );
-			
-			Thread.sleep( 1000 );
+			setLoadingText( "Creating Display" );
 			
 			getContentPane().add( new JScrollPane( edit ), BorderLayout.CENTER );
 			edit.setEditable( false );
 			edit.setEditorKit( new ChiHTMLEditorKit() );
+			
+			Thread.sleep( 200 );
+			
+			setLoadingText( "Rendering Source" );
+			
 			edit.setText( getPage( packSource ) );
+			
+			Thread.sleep( 200 );
+			
+			setLoadingText( "Finishing Up" );
+			
+			Thread.sleep( 200 );
+			
+			setLoadingText( "Done" );
+			
+			Thread.sleep( 200 );
 			
 			loadingScreen( false );
 		}

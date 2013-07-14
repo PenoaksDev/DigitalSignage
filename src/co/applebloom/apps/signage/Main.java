@@ -2,11 +2,12 @@ package co.applebloom.apps.signage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import co.applebloom.apps.signage.components.ScreenFrame;
+import co.applebloom.apps.signage.configuration.ConfigurationSection;
 import co.applebloom.apps.signage.configuration.file.YamlConfiguration;
 import co.applebloom.apps.signage.server.Server;
 
@@ -16,8 +17,6 @@ public class Main
 	private static File fileConfig = new File( Main.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/signage.yml" );
 	private static YamlConfiguration config;
 	private static Server server;
-	
-	public ArrayList<ScreenFrame> frames = new ArrayList<ScreenFrame>();
 	
 	public static Logger getLogger()
 	{
@@ -36,6 +35,7 @@ public class Main
 	
 	public Main()
 	{
+		// Initalize configuration
 		if ( fileConfig.exists() )
 		{
 			config = YamlConfiguration.loadConfiguration( fileConfig );
@@ -60,8 +60,9 @@ public class Main
 			}
 		}
 		
-		// Why does this not work?
-		Runtime.getRuntime().addShutdownHook( new Thread(){
+		// Why does this not work? or does it?
+		Runtime.getRuntime().addShutdownHook( new Thread()
+		{
 			public void run()
 			{
 				try
@@ -74,8 +75,9 @@ public class Main
 					e.printStackTrace();
 				}
 			}
-		});
+		} );
 		
+		// Initalize the server for use in server or dual modes.
 		server = new Server();
 		server.setPort( config.getInt( "general.port", 8080 ) );
 		server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
@@ -94,14 +96,39 @@ public class Main
 				break;
 		}
 		
-
 	}
 	
 	private void startClient()
 	{
-		System.out.println( "display: " + config.getList( "display" ) );
+		// Find each section of the display config.
+		ConfigurationSection cs = config.getConfigurationSection( "display" );
 		
-		for ( int n = 0; n < ScreenFrame.getNumberOfMonitors(); n++ )
-			new FrameThreaded( n, "default/screenA" );
+		// Loop though each section of the display config.
+		for ( String key : cs.getKeys( false ) )
+		{
+			// Retrive the info. getInt is not returning the correct value.
+			int id = Integer.parseInt( cs.getString( key + ".id", "0" ) );
+			String source = cs.getString( key + ".source", "default/default" );
+			
+			// Make sure the source path is valid.
+			if ( !source.isEmpty() )
+			{
+				// Make sure that we don't accidently put two screens on one display.
+				while ( screens.containsKey( id ) )
+					id++;
+				
+				// Check that we have a screen psyically available for this id.
+				if ( id < ScreenFrame.getNumberOfMonitors() )
+				{
+					System.out.println( "Loading screen #" + id + " with source " + source + "." );
+					
+					// Initalize and track a reference to each screen loaded.
+					screens.put( id, new FrameThreaded( id, source ) );
+				}
+			}
+		}
 	}
+	
+	// A HashMap to keep track of all the screens loaded. 
+	private static HashMap<Integer, FrameThreaded> screens = new HashMap<Integer, FrameThreaded>();
 }

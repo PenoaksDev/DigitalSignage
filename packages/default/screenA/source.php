@@ -7,6 +7,8 @@
 		Text after button
 	</p>
 	
+	<video />
+	
 	<h1><?= java_bean("signage")->hello(); ?></h1>
 	
 	<!-- Javascript does not seem to function on a Resin server. Not sure if this is something we will want. -->
