@@ -3,13 +3,13 @@ package co.applebloom.apps.signage.components;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import javax.swing.JScrollPane;
+import javax.swing.JComponent;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import co.applebloom.apps.signage.Main;
 
 @SuppressWarnings( "serial" )
-public class MediaFrame extends JScrollPane implements ComponentListener
+public class MediaFrame extends JComponent implements ComponentListener
 {
 	private EmbeddedMediaPlayerComponent player;
 	
@@ -35,9 +35,8 @@ public class MediaFrame extends JScrollPane implements ComponentListener
 			player = new EmbeddedMediaPlayerComponent();
 			this.add( player );
 			player.setVisible( true );
-			//player.setSize( 1050, 600 );
-			//this.setSize( 1050, 600 );
-			//this.setVisible( true );
+			player.setSize( 1050, 600 );
+			player.setVisible( true );
 			
 			playMedia( "fridayafternext_http.mp4" );
 		}
