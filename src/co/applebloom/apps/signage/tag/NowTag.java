@@ -1,41 +1,40 @@
 package co.applebloom.apps.signage.tag;
 
-import java.awt.Component;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JLabel;
-import javax.swing.text.ComponentView;
-import javax.swing.text.Element;
 
-@HTMLElement( tagName = "now" )
-public class NowTag extends ComponentView implements DSTag
+@XMLComponent( tagName = "now" )
+public class NowTag extends JLabel implements DSTag
 {
-	public NowTag(Element element)
+	public NowTag()
 	{
-		super( element );
-	}
-	
-	@Override
-	public Component createComponent()
-	{
-		String format = (String) getElement().getAttributes().getAttribute( "format" );
-		
-		if ( format == null )
-			format = "HH:mm:SS";
-		
-		JLabel label = new JLabel( format );
-		
-		SimpleDateFormat sdf = new SimpleDateFormat( format );
-		Date currDate = new Date();
-		label.setText( sdf.format( currDate ) );
-		
-		return label;
+		super();
 	}
 	
 	@Override
 	public String getName()
 	{
 		return "Now";
+	}
+
+	@Override
+	public void onCreate( Object parentObj, org.w3c.dom.Element elm )
+	{
+		String format = elm.getAttribute( "format" );
+		
+		if ( format == null )
+			format = "HH:mm:SS";
+		
+		SimpleDateFormat sdf = new SimpleDateFormat( format );
+		Date currDate = new Date();
+		setText( sdf.format( currDate ) );
+	}
+
+	@Override
+	public void onEditFinished( Object parentObj, org.w3c.dom.Element elm )
+	{
+		
 	}
 }

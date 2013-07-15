@@ -2,31 +2,22 @@ package co.applebloom.apps.signage.components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-import java.io.IOException;
-import java.util.Set;
+import java.io.File;
 
 import javax.swing.ImageIcon;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 
-import co.applebloom.apps.signage.rendering.ChiHTMLEditorKit;
-import co.applebloom.apps.signage.server.Server;
-import co.applebloom.apps.signage.tag.HTMLElement;
-
-import com.impetus.annovention.ClasspathDiscoverer;
-import com.impetus.annovention.Discoverer;
+import cookxml.cookswing.CookSwing;
 
 public class ScreenFrame extends JFrame
 {
 	private static final long serialVersionUID = -8415026498095675707L;
-	
-	private JEditorPane edit = new JEditorPane();
 	private JLabel loadingComponent = null;
 	
 	public ScreenFrame()
@@ -42,44 +33,63 @@ public class ScreenFrame extends JFrame
 		loadingScreen( true );
 	}
 	
-	public String getPage( String packSource ) throws IOException
-	{
-		// Get page from the built-in resin server which means PHP is executed and can access Java methods.
-		return Server.getResinServer().request( "GET /packs/" + packSource + "/source.php" );
-	}
-	
 	public void initDisplay( String packSource )
 	{
 		try
 		{
 			setLoadingText( "Creating Display" );
 			
-			getContentPane().add( new JScrollPane( edit ), BorderLayout.CENTER );
-			edit.setEditable( false );
-			edit.setEditorKit( new ChiHTMLEditorKit() );
+			CookSwing cookSwing = new CookSwing();
 			
 			Thread.sleep( 200 );
 			
 			setLoadingText( "Rendering Source" );
 			
-			edit.setText( getPage( packSource ) );
+			File file = new File( ScreenFrame.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/packages/" + packSource + "/source.xml" );
 			
-			Thread.sleep( 200 );
-			
-			setLoadingText( "Finishing Up" );
-			
-			Thread.sleep( 200 );
-			
-			setLoadingText( "Done" );
-			
-			Thread.sleep( 200 );
-			
-			loadingScreen( false );
+			if ( file.exists() )
+			{
+				Container c = cookSwing.render( file );
+				
+				Thread.sleep( 200 );
+				
+				setLoadingText( "Finishing Up" );
+				
+				c.setVisible( true );
+				getContentPane().add( c );
+				
+				Thread.sleep( 200 );
+				
+				setLoadingText( "Done" );
+				
+				Thread.sleep( 200 );
+				
+				loadingScreen( false );
+			}
+			else
+			{
+				showCritical( "Could not load the defined package in config!!!" );
+			}
 		}
 		catch ( Exception e )
 		{
+			showCritical( e.getMessage() );
 			e.printStackTrace();
 		}
+	}
+	
+	private void showCritical( String text )
+	{
+		loadingScreen( false );
+		
+		ImageIcon ii = new ImageIcon( ScreenFrame.class.getClassLoader().getResource( "resources" ).toExternalForm().substring( 5 ) + "/symbol-error.png" );
+		JLabel criticalComponent = new JLabel( ii );
+		criticalComponent.setFont( new Font( "Ubuntu", Font.BOLD, 36 ) );
+		criticalComponent.setOpaque( true );
+		criticalComponent.setBackground( Color.RED );
+		criticalComponent.setForeground( Color.WHITE );
+		criticalComponent.setText( "CRITICAL!!! " + text );
+		getContentPane().add( criticalComponent, BorderLayout.CENTER );
 	}
 	
 	private void createLoadingScreen()
@@ -104,6 +114,9 @@ public class ScreenFrame extends JFrame
 	
 	public void setLoadingText( String str )
 	{
+		if ( str == null || loadingComponent == null )
+			return;
+		
 		if ( str.isEmpty() )
 		{
 			loadingComponent.setText( "Initalizing Digital Signage..." );

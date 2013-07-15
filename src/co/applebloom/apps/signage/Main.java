@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import co.applebloom.apps.signage.components.ScreenFrame;
+import co.applebloom.apps.signage.components.TagLoader;
 import co.applebloom.apps.signage.configuration.ConfigurationSection;
 import co.applebloom.apps.signage.configuration.file.YamlConfiguration;
 import co.applebloom.apps.signage.server.Server;
@@ -17,10 +18,16 @@ public class Main
 	private static File fileConfig = new File( Main.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/signage.yml" );
 	private static YamlConfiguration config;
 	private static Server server;
+	private static TagLoader tagLoader = new TagLoader();
 	
 	public static Logger getLogger()
 	{
 		return log;
+	}
+	
+	public static TagLoader getTagLoader()
+	{
+		return tagLoader;
 	}
 	
 	public static YamlConfiguration getAppConfig()
@@ -78,18 +85,18 @@ public class Main
 		} );
 		
 		// Initalize the server for use in server or dual modes.
-		server = new Server();
-		server.setPort( config.getInt( "general.port", 8080 ) );
-		server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
+		//server = new Server();
+		//server.setPort( config.getInt( "general.port", 8080 ) );
+		//server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
 		
 		switch ( config.getString( "general.mode" ) )
 		{
 			case "dual":
-				server.start();
+				//server.start();
 				startClient();
 				break;
 			case "server":
-				server.start();
+				//server.start();
 				break;
 			case "client":
 				startClient();

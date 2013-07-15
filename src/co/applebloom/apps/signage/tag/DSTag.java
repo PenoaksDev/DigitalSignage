@@ -1,11 +1,10 @@
 package co.applebloom.apps.signage.tag;
 
-import java.awt.Component;
-
-import javax.swing.text.Element;
+import org.w3c.dom.Element;
 
 public interface DSTag
 {
-	public Component createComponent();
+	public void onCreate( Object parentObj, Element elm );
+	public void onEditFinished( Object parentObj, Element elm );
 	public String getName();
 }

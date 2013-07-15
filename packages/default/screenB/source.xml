@@ -1,0 +1,7 @@
+<panel>
+	<gridlayout rows="1" columns="1">
+		<scrollpane>
+			<video width="1050" height="600" background="blue" src="blahblah" />
+		</scrollpane>
+	</gridlayout>
+</panel>

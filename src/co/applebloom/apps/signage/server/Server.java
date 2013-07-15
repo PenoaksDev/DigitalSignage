@@ -1,7 +1,5 @@
 package co.applebloom.apps.signage.server;
 
-import co.applebloom.apps.signage.Main;
-
 import com.caucho.resin.BeanEmbed;
 import com.caucho.resin.HttpEmbed;
 import com.caucho.resin.ResinEmbed;
@@ -21,9 +19,6 @@ public class Server extends Thread
 		
 		resin.addBean(new BeanEmbed(service, "signage"));
 		
-		String packageRoot = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/packages";
-		
-		resin.addWebApp( new WebAppEmbed( "/packs/", packageRoot ) );
 		resin.addWebApp( new WebAppEmbed( "/", Server.class.getClassLoader().getResource( "webroot" ).toExternalForm().substring( 5 ) ) );
 	}
 	
