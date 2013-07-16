@@ -91,18 +91,18 @@ public class Main
 		} );
 		
 		// Initalize the server for use in server or dual modes.
-		server = new Server();
-		server.setPort( config.getInt( "general.port", 8080 ) );
-		server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
+		//server = new Server();
+		//server.setPort( config.getInt( "general.port", 8080 ) );
+		//server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
 		
 		switch ( config.getString( "general.mode" ) )
 		{
 			case "dual":
-				server.start();
+				//server.start();
 				startClient();
 				break;
 			case "server":
-				server.start();
+				//server.start();
 				break;
 			case "client":
 				startClient();

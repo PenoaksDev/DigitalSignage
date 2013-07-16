@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <panel background="#67cae9">
+    <scheduler>
+        <slide interval="5000" src="@frame/frame1.xml" />
+        <slide internal="5000" src="@frame/frame2.xml" />
+    </scheduler>
+    
+    
 	<gridlayout rows="1" columns="2">
 	    <menuStyle itemCSS="margin: 2px; padding: 1px; font-size: 20px; width: 725px;" menuCSS="margin: 2px; background-color: #000; padding: 1px; font-size: 46px; width: 725px;" />
 		<menuSection>

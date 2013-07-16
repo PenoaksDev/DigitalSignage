@@ -7,28 +7,27 @@ import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import co.applebloom.apps.signage.Main;
-
+import co.applebloom.apps.signage.ResourceLoader;
 import cookxml.cookswing.CookSwing;
 
 public class ScreenFrame extends JFrame
 {
 	private static final long serialVersionUID = -8415026498095675707L;
 	private JLabel loadingComponent = null;
-	private String packSource = "";
+	private ResourceLoader pack;
 	
 	public ScreenFrame()
 	{
 		super( "Digital Signage App" );
-
+		
 		// TODO Good idea to enable.
-		//setAlwaysOnTop( true );
+		// setAlwaysOnTop( true );
 		setLocationRelativeTo( null );
 		setUndecorated( true );
 		setScreen( 0 );
@@ -36,52 +35,38 @@ public class ScreenFrame extends JFrame
 		setBackground( Color.WHITE );
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		loadingScreen( true );
+		setLoadingText( "Creating Display" );
 	}
 	
 	public void initDisplay( String packSource )
 	{
-		this.packSource = packSource;
-		
 		try
 		{
-			setLoadingText( "Creating Display" );
+			setLoadingText( "Loading the Resource Pack" );
 			
-			CookSwing cookSwing = new CookSwing();
+			pack = ResourceLoader.buildLoader( ScreenFrame.class.getProtectionDomain().getCodeSource().getLocation().getPath() + System.getProperty( "file.separator", "/" ) + "packages" + System.getProperty( "file.separator", "/" ) + packSource );
 			
-			Thread.sleep( 200 );
+			if ( pack == null )
+			{
+				showCritical( "Could not load the resource pack" );
+				return;
+			}
 			
 			setLoadingText( "Rendering Source" );
+			CookSwing cookSwing = new CookSwing();
+			Container c = cookSwing.render( pack.getInputStream( "source.xml" ) );
 			
-			File file = new File( ScreenFrame.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/packages/" + packSource + "/source.xml" );
+			setLoadingText( "Finishing Up" );
+			c.setVisible( true );
+			getContentPane().add( c );
 			
-			if ( file.exists() )
-			{
-				Container c = cookSwing.render( file );
-				
-				Thread.sleep( 200 );
-				
-				setLoadingText( "Finishing Up" );
-				
-				c.setVisible( true );
-				getContentPane().add( c );
-				
-				Thread.sleep( 200 );
-				
-				setLoadingText( "Done" );
-				
-				Thread.sleep( 200 );
-				
-				loadingScreen( false );
-			}
-			else
-			{
-				showCritical( "Could not load the defined package in config!!!" );
-			}
+			setLoadingText( "Done" );
+			loadingScreen( false );
 		}
 		catch ( Exception e )
 		{
-			showCritical( e.getMessage() );
 			e.printStackTrace();
+			showCritical( e.getMessage() );
 		}
 	}
 	
@@ -93,9 +78,9 @@ public class ScreenFrame extends JFrame
 		loadingComponent = null;
 		
 		loadingScreen( true );
-		initDisplay( packSource );
+		//initDisplay( packSource );
 		
-		return "We tried to reload the monitor!" ;
+		return "We tried to reload the monitor!";
 	}
 	
 	private void showCritical( String text )

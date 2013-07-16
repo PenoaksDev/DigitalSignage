@@ -7,5 +7,5 @@ display:
     source: default/screenA
     id: 1
   screenB:
-    source: default/screenB
+    source: test.zip
     id: 2
