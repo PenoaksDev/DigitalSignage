@@ -3,6 +3,8 @@ package co.applebloom.apps.signage.components;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import javax.swing.SwingConstants;
+
 import org.w3c.dom.Element;
 
 import co.applebloom.apps.signage.Main;
@@ -16,6 +18,7 @@ import com.impetus.annovention.listener.ClassAnnotationDiscoveryListener;
 import cookxml.cookswing.CookSwing;
 import cookxml.core.DecodeEngine;
 import cookxml.core.interfaces.Creator;
+import cookxml.core.setter.ConstantSetter;
 
 public class TagLoader implements Creator, ClassAnnotationDiscoveryListener
 {
@@ -39,6 +42,9 @@ public class TagLoader implements Creator, ClassAnnotationDiscoveryListener
 			try
 			{
 				XMLComponent anno = Class.forName( clazz ).getAnnotation( XMLComponent.class );
+				
+				ConstantSetter swingConstantsSetter = new ConstantSetter( SwingConstants.class );
+				CookSwing.getSwingTagLibrary().setSetter( anno.tagName(), "orientation", swingConstantsSetter );
 				
 				CookSwing.getSwingTagLibrary().setCreator( anno.tagName(), this );
 				registeredTags.put( anno.tagName(), clazz );
@@ -65,6 +71,15 @@ public class TagLoader implements Creator, ClassAnnotationDiscoveryListener
 			
 			DSTag tag = (DSTag) Class.forName( registeredTags.get( elm.getTagName() ) ).newInstance();
 			tag.onCreate( parentObj, elm );
+			
+			/*
+			XMLComponent anno = tag.getClass().getAnnotation( XMLComponent.class );
+			if ( anno.customAdder() )
+			{
+				return null;
+			}
+			*/
+			
 			return tag;
 		}
 		
@@ -78,7 +93,7 @@ public class TagLoader implements Creator, ClassAnnotationDiscoveryListener
 		{
 			log.info( "Finished Class(" + Class.forName( registeredTags.get( elm.getTagName() ) ).getName() + ") with Tag(" + elm.getTagName() + ")" );
 			
-			((DSTag) obj ).onEditFinished( parentObj, elm );
+			( (DSTag) obj ).onEditFinished( parentObj, elm );
 			
 			return obj;
 		}

@@ -1,7 +1,20 @@
-<panel>
-	<gridlayout rows="1" columns="1">
-		<scrollpane>
-			<video width="1050" height="600" background="blue" src="blahblah" />
-		</scrollpane>
+<panel background="Black">
+	<gridlayout rows="2" columns="2">
+		<video width="1050" heihgt="600">
+			<playlist>
+				<item src="http://samples.mplayerhq.hu/MPEG-4/fridayafternext_http.mp4"
+					method="download" />
+				<item
+					src="http://media2.foxnews.com/071313/reporter_prann_071313_FNC_MED.mp4"
+					method="download" />
+				<item
+					src="http://media2.foxnews.com/071313/anhq_vitter_071313_FNC_MED.mp4"
+					method="download" />
+			</playlist>
+		</video>
+		<menuSection title="Pancakes">
+		    <item title="Short Stack" price="2" />
+		    <item title="Full Order" price="3.75" />
+		</menuSection>
 	</gridlayout>
 </panel>

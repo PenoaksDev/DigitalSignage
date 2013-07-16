@@ -1,7 +1,15 @@
-<panel>
-	<gridlayout rows="1" columns="1">
-		<scrollpane>
-			<video width="1050" height="600" background="blue" src="blahblah" />
-		</scrollpane>
+<?xml version="1.0" encoding="utf-8"?>
+<panel background="#67cae9">
+	<gridlayout rows="1" columns="2">
+		<menuSection>
+		    <item type="title" style="margin: 10px; background-color: #000; padding: 3px; font-size: 46px; width: 100px;" color="#ffffff" title="BREAKFAST" align="center" />
+		    <item title="Short Stack" orientation="right" style="" size="20" price="2" />
+		    <item title="Full Order" price="3.75" />
+		</menuSection>
+		<menuSection>
+		    <item type="title" style="margin: 10px; background-color: #000; padding: 3px; font-size: 46px; width: 100px;" color="#ffffff" title="LUNCH" align="center" />
+		    <item title="Short Stack" style="" size="20" price="2" />
+		    <item title="Full Order" size="20" price="3.75" />
+		</menuSection>
 	</gridlayout>
 </panel>

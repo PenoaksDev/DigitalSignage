@@ -8,4 +8,6 @@
 .project
 .ignore
 .settings
+.DS_Store
+__MACOSX
 /bin

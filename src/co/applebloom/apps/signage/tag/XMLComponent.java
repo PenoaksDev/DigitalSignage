@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME )
 public @interface XMLComponent
 {
-	String tagName();	
+	String tagName();
+	boolean customAdder() default false;
 }

@@ -23,7 +23,9 @@ public class ScreenFrame extends JFrame
 	public ScreenFrame()
 	{
 		super( "Digital Signage App" );
-		
+
+		// TODO Good idea to enable.
+		//setAlwaysOnTop( true );
 		setLocationRelativeTo( null );
 		setUndecorated( true );
 		setScreen( 0 );

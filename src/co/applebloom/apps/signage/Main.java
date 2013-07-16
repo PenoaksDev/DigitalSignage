@@ -1,10 +1,16 @@
 package co.applebloom.apps.signage;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.JLabel;
 
 import co.applebloom.apps.signage.components.ScreenFrame;
 import co.applebloom.apps.signage.components.TagLoader;
@@ -85,18 +91,18 @@ public class Main
 		} );
 		
 		// Initalize the server for use in server or dual modes.
-		//server = new Server();
-		//server.setPort( config.getInt( "general.port", 8080 ) );
-		//server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
+		// server = new Server();
+		// server.setPort( config.getInt( "general.port", 8080 ) );
+		// server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
 		
 		switch ( config.getString( "general.mode" ) )
 		{
 			case "dual":
-				//server.start();
+				// server.start();
 				startClient();
 				break;
 			case "server":
-				//server.start();
+				// server.start();
 				break;
 			case "client":
 				startClient();
@@ -136,6 +142,62 @@ public class Main
 		}
 	}
 	
-	// A HashMap to keep track of all the screens loaded. 
+	public static Server getServer()
+	{
+		return server;
+	}
+	
+	public static void setServer( Server server )
+	{
+		Main.server = server;
+	}
+	
+	public static int parseAlignment( String align )
+	{
+		try
+		{
+			Field field = Class.forName("javax.swing.JLabel").getField( align.trim().toUpperCase() );
+			return (int) field.get(null);
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+		}
+		
+		return JLabel.LEFT; // Align left by default.
+	}
+	
+	public static Color parseColor( String color )
+	{
+		Pattern c = Pattern.compile( "rgb *\\( *([0-9]+), *([0-9]+), *([0-9]+) *\\)" );
+		Matcher m = c.matcher( color );
+		
+		// First try to parse RGB(0,0,0);
+		if ( m.matches() )
+		{
+			return new Color( Integer.valueOf( m.group( 1 ) ), // r
+			Integer.valueOf( m.group( 2 ) ), // g
+			Integer.valueOf( m.group( 3 ) ) ); // b
+		}
+		
+		try
+		{
+			Field field = Class.forName("java.awt.Color").getField( color.trim().toUpperCase() );
+			return (Color) field.get(null);
+		}
+		catch ( Exception e )
+		{}
+		
+		try
+		{
+			return Color.decode( color );
+		}
+		catch ( Exception e )
+		{}
+		
+		return null;
+	}
+	
+	// A HashMap to keep track of all the screens loaded.
 	private static HashMap<Integer, FrameThreaded> screens = new HashMap<Integer, FrameThreaded>();
 }
