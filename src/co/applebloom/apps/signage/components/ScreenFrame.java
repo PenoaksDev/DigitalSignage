@@ -13,12 +13,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import co.applebloom.apps.signage.Main;
+
 import cookxml.cookswing.CookSwing;
 
 public class ScreenFrame extends JFrame
 {
 	private static final long serialVersionUID = -8415026498095675707L;
 	private JLabel loadingComponent = null;
+	private String packSource = "";
 	
 	public ScreenFrame()
 	{
@@ -37,6 +40,8 @@ public class ScreenFrame extends JFrame
 	
 	public void initDisplay( String packSource )
 	{
+		this.packSource = packSource;
+		
 		try
 		{
 			setLoadingText( "Creating Display" );
@@ -78,6 +83,19 @@ public class ScreenFrame extends JFrame
 			showCritical( e.getMessage() );
 			e.printStackTrace();
 		}
+	}
+	
+	public String reload()
+	{
+		Main.getLogger().info( "We tried to reload the monitor!" );
+		
+		this.removeAll();
+		loadingComponent = null;
+		
+		loadingScreen( true );
+		initDisplay( packSource );
+		
+		return "We tried to reload the monitor!" ;
 	}
 	
 	private void showCritical( String text )

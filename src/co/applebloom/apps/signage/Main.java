@@ -91,18 +91,18 @@ public class Main
 		} );
 		
 		// Initalize the server for use in server or dual modes.
-		// server = new Server();
-		// server.setPort( config.getInt( "general.port", 8080 ) );
-		// server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
+		server = new Server();
+		server.setPort( config.getInt( "general.port", 8080 ) );
+		server.setIp( config.getString( "general.ip", "0.0.0.0" ) );
 		
 		switch ( config.getString( "general.mode" ) )
 		{
 			case "dual":
-				// server.start();
+				server.start();
 				startClient();
 				break;
 			case "server":
-				// server.start();
+				server.start();
 				break;
 			case "client":
 				startClient();
@@ -156,8 +156,8 @@ public class Main
 	{
 		try
 		{
-			Field field = Class.forName("javax.swing.JLabel").getField( align.trim().toUpperCase() );
-			return (int) field.get(null);
+			Field field = Class.forName( "javax.swing.JLabel" ).getField( align.trim().toUpperCase() );
+			return (int) field.get( null );
 		}
 		catch ( Exception e )
 		{
@@ -182,8 +182,8 @@ public class Main
 		
 		try
 		{
-			Field field = Class.forName("java.awt.Color").getField( color.trim().toUpperCase() );
-			return (Color) field.get(null);
+			Field field = Class.forName( "java.awt.Color" ).getField( color.trim().toUpperCase() );
+			return (Color) field.get( null );
 		}
 		catch ( Exception e )
 		{}
@@ -196,6 +196,11 @@ public class Main
 		{}
 		
 		return null;
+	}
+	
+	public static FrameThreaded getFrame( int index )
+	{
+		return ( screens.containsKey( index ) ) ? screens.get( index ) : null;
 	}
 	
 	// A HashMap to keep track of all the screens loaded.

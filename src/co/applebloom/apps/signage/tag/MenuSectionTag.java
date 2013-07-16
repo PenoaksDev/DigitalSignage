@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 
 import org.w3c.dom.Element;
 
+import co.applebloom.apps.signage.Main;
+
 @XMLComponent( tagName = "menuSection" )
 public class MenuSectionTag extends JPanel implements DSTag
 {
@@ -14,7 +16,7 @@ public class MenuSectionTag extends JPanel implements DSTag
 	
 	public MenuSectionTag()
 	{
-		super( new GridBagLayout() );
+		super(); // new GridBagLayout()
 	}
 	
 	@Override

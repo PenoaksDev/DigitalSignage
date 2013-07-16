@@ -26,11 +26,23 @@ public class MenuItemTag extends JLabel implements DSTag, Adder
 		if ( type.isEmpty() )
 			type = "default";
 		
+		MenuStyleTag tag = (MenuStyleTag) Main.getTagLoader().getConfigTag( MenuStyleTag.class );
+		String style = "";
+		
 		switch ( type )
 		{
 			case "title":
 				fontSize = 46;
+				if ( tag != null )
+					style = tag.menuCSS;
+				break;
+			case "default":
+			default:
+				if ( tag != null )
+					style = tag.itemCSS;
 		}
+		
+		style += " " + elm.getAttribute( "style" );
 		
 		if ( !elm.getAttribute( "size" ).isEmpty() )
 			fontSize = Integer.parseInt( elm.getAttribute( "size" ) );
@@ -44,7 +56,7 @@ public class MenuItemTag extends JLabel implements DSTag, Adder
 		if ( !elm.getAttribute( "align" ).isEmpty() )
 			fontAlign = Main.parseAlignment( elm.getAttribute( "align" ) );
 		
-		setText( "<html><p style=\"" + elm.getAttribute( "style" ) + "\">" + elm.getAttribute( "title" ) + "</p></html>" );
+		setText( "<html><p style=\"" + style + "\">" + elm.getAttribute( "title" ) + "</p></html>" );
 		setFont( new Font( fontName, Font.PLAIN, fontSize ) );
 		setVerticalTextPosition( JLabel.CENTER );
 		setHorizontalTextPosition( fontAlign );

@@ -8,8 +8,10 @@ import javax.swing.SwingConstants;
 import org.w3c.dom.Element;
 
 import co.applebloom.apps.signage.Main;
+import co.applebloom.apps.signage.tag.DSConfig;
 import co.applebloom.apps.signage.tag.DSTag;
 import co.applebloom.apps.signage.tag.XMLComponent;
+import co.applebloom.apps.signage.tag.XMLConfig;
 
 import com.impetus.annovention.ClasspathDiscoverer;
 import com.impetus.annovention.Discoverer;
@@ -23,6 +25,7 @@ import cookxml.core.setter.ConstantSetter;
 public class TagLoader implements Creator, ClassAnnotationDiscoveryListener
 {
 	HashMap<String, String> registeredTags = new HashMap<String, String>();
+	HashMap<String, DSConfig> registeredConfigs = new HashMap<String, DSConfig>();
 	private static Logger log = Main.getLogger();
 	
 	public TagLoader()
@@ -54,33 +57,67 @@ public class TagLoader implements Creator, ClassAnnotationDiscoveryListener
 				e.printStackTrace();
 			}
 		}
+		else if ( annotation.equals( XMLConfig.class.getName() ) )
+		{
+			try
+			{
+				XMLConfig anno = Class.forName( clazz ).getAnnotation( XMLConfig.class );
+				
+				CookSwing.getSwingTagLibrary().setCreator( anno.tagName(), this );
+				registeredConfigs.put( anno.tagName(), (DSConfig) Class.forName( clazz ).newInstance() );
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override
 	public String[] supportedAnnotations()
 	{
-		return new String[] { XMLComponent.class.getName() };
+		return new String[] { XMLComponent.class.getName(), XMLConfig.class.getName() };
 	}
 	
 	@Override
 	public Object create( String parentNS, String parentTag, Element elm, Object parentObj, DecodeEngine decodeEngine ) throws Exception
 	{
-		if ( registeredTags.containsKey( elm.getTagName() ) )
+		try
 		{
-			log.info( "Created Class(" + Class.forName( registeredTags.get( elm.getTagName() ) ).getName() + ") with Tag(" + elm.getTagName() + ")" );
-			
-			DSTag tag = (DSTag) Class.forName( registeredTags.get( elm.getTagName() ) ).newInstance();
-			tag.onCreate( parentObj, elm );
-			
-			/*
-			XMLComponent anno = tag.getClass().getAnnotation( XMLComponent.class );
-			if ( anno.customAdder() )
+			if ( registeredTags.containsKey( elm.getTagName() ) )
 			{
-				return null;
+				log.info( "Created Class(" + Class.forName( registeredTags.get( elm.getTagName() ) ).getName() + ") with Tag(" + elm.getTagName() + ")" );
+				
+				DSTag tag = (DSTag) Class.forName( registeredTags.get( elm.getTagName() ) ).newInstance();
+				tag.onCreate( parentObj, elm );
+				
+				return tag;
 			}
-			*/
+			else if ( registeredConfigs.containsKey( elm.getTagName() ) )
+			{
+				log.info( "Found XMLConfig(" + registeredConfigs.get( elm.getTagName() ).getClass() + ") with Tag(" + elm.getTagName() + ")" );
+				
+				registeredConfigs.get( elm.getTagName() ).onConfig( parentObj, elm );
+				
+				// This tag does not return any objects since its just ment to manipulate the DOM or other objects
+			}
 			
-			return tag;
+			log.info( "Tag(" + elm.getTagName() + ")" );
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public DSConfig getConfigTag( Class<? extends DSConfig> clazz )
+	{
+		for ( DSConfig tag : registeredConfigs.values() )
+		{
+			if ( tag.getClass().equals( clazz ) )
+				return tag;
 		}
 		
 		return null;
