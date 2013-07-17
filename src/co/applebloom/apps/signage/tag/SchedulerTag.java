@@ -17,23 +17,36 @@ public class SchedulerTag extends JPanel implements DSTag
 	private static Thread concurrentAction;
 	private ArrayList<ScheduledSlide> slides = new ArrayList<ScheduledSlide>();
 	private int currentIndex = 0;
+	private int defaultInterval = 5000;
 	
 	public SchedulerTag()
 	{
 		super();
 		setOpaque( false );
 		
-		// TODO: Needs some preventive options
-		((FlowLayout) getLayout()).setVgap( 0 );
-		((FlowLayout) getLayout()).setHgap( 0 );
+		try
+		{
+			// TODO: Needs some preventive options
+			((FlowLayout) getLayout()).setVgap( 0 );
+			((FlowLayout) getLayout()).setHgap( 0 );
+		}
+		catch ( Exception e )
+		{}
 	}
 	
 	@Override
 	public void onCreate( Object parentObj, Element elm )
 	{
-		// TODO: Needs some preventive options
-		((FlowLayout) ((Container) parentObj).getLayout()).setVgap( 0 );
-		((FlowLayout) ((Container) parentObj).getLayout()).setHgap( 0 );
+		try
+		{
+			// TODO: Needs some preventive options
+			((FlowLayout) ((Container) parentObj).getLayout()).setVgap( 0 );
+			((FlowLayout) ((Container) parentObj).getLayout()).setHgap( 0 );
+			
+			defaultInterval = Integer.parseInt( elm.getAttribute( "interval" ) );
+		}
+		catch ( Exception e )
+		{}
 		
 		for ( int i = 0; i < elm.getChildNodes().getLength(); i++ )
 		{
@@ -131,7 +144,12 @@ public class SchedulerTag extends JPanel implements DSTag
 					
 					previousSlide = s;
 					
-					Thread.sleep( s.getInterval() );
+					int interval = s.getInterval();
+					
+					if ( interval == 0 )
+						interval = parent.defaultInterval;
+					
+					Thread.sleep( interval );
 				}
 				catch ( Exception e )
 				{

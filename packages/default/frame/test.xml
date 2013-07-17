@@ -1,0 +1,14 @@
+<panel background="Black">
+	<video>
+		<playlist>
+			<item src="http://samples.mplayerhq.hu/MPEG-4/fridayafternext_http.mp4"
+				method="download" />
+			<item
+				src="http://media2.foxnews.com/071313/reporter_prann_071313_FNC_MED.mp4"
+				method="download" />
+			<item
+				src="http://media2.foxnews.com/071313/anhq_vitter_071313_FNC_MED.mp4"
+				method="download" />
+		</playlist>
+	</video>
+</panel>

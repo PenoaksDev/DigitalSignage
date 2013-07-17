@@ -263,7 +263,7 @@ public class VideoTag extends Canvas implements DSTag, ComponentListener, MediaP
 	@Override
 	public void positionChanged( MediaPlayer arg0, float arg1 )
 	{
-		Main.getLogger().info( "Video has changed position!" );
+		//Main.getLogger().info( "Video has changed position!" );
 	}
 	
 	@Override
@@ -293,7 +293,7 @@ public class VideoTag extends Canvas implements DSTag, ComponentListener, MediaP
 	@Override
 	public void timeChanged( MediaPlayer arg0, long arg1 )
 	{
-		Main.getLogger().info( "Video has changed time!" );
+		//Main.getLogger().info( "Video has changed time!" );
 	}
 	
 	@Override
