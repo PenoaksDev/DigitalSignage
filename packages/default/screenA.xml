@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<panel background="#ffffff">
+	<scheduler>
+		<slide interval="5000" src="@image/anime1.png" />
+		<slide interval="500" src="@image/anime2.jpg" />
+		<slide interval="5000" src="@image/anime3.png" />
+		<slide interval="7000" src="@image/pony1.jpg" />
+	</scheduler>
+</panel>

@@ -2,10 +2,11 @@ general:
   mode: dual
   ip: 0.0.0.0
   port: '8080'
+  pack: default
 display:
   screenA:
-    source: default/screenA
+    source: screenA.xml
     id: 1
   screenB:
-    source: test.zip
+    source: screenB.xml
     id: 2

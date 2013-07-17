@@ -1,19 +1,21 @@
 package co.applebloom.apps.signage;
 
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
+
+import com.google.common.io.CharStreams;
 
 public class ResourceLoader
 {
@@ -68,6 +70,8 @@ public class ResourceLoader
 		{
 			File file = new File( resourcePath.getAbsolutePath() + System.getProperty( "file.separator", "/" ) + relPath );
 			
+			Main.getLogger().info( file.getAbsolutePath() );
+			
 			if ( !file.exists() )
 				throw new FileNotFoundException();
 			
@@ -90,7 +94,22 @@ public class ResourceLoader
 		}
 		catch ( ZipException | IOException e )
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public String getText( String relPath )
+	{
+		try
+		{
+			InputStream is = getInputStream( relPath );
+			
+			return CharStreams.toString( new InputStreamReader( is, "UTF-8" ) );
+		}
+		catch ( ZipException | IOException e )
+		{
+			//e.printStackTrace();
 			return null;
 		}
 	}

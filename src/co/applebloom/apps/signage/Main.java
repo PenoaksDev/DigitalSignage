@@ -24,6 +24,7 @@ public class Main
 	private static File fileConfig = new File( Main.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/signage.yml" );
 	private static YamlConfiguration config;
 	private static Server server;
+	private static ResourceLoader resourceLoader;
 	private static TagLoader tagLoader = new TagLoader();
 	
 	public static Logger getLogger()
@@ -55,6 +56,7 @@ public class Main
 			config.addDefault( "general.mode", "dual" );
 			config.addDefault( "general.ip", "0.0.0.0" );
 			config.addDefault( "general.port", "8080" );
+			config.addDefault( "general.pack", "default" );
 		}
 		else
 		{
@@ -62,6 +64,7 @@ public class Main
 			config.set( "general.mode", "dual" );
 			config.set( "general.ip", "0.0.0.0" );
 			config.set( "general.port", "8080" );
+			config.set( "general.pack", "default" );
 			
 			try
 			{
@@ -89,6 +92,11 @@ public class Main
 				}
 			}
 		} );
+		
+		resourceLoader = ResourceLoader.buildLoader( ScreenFrame.class.getProtectionDomain().getCodeSource().getLocation().getPath() + System.getProperty( "file.separator", "/" ) + "packages" + System.getProperty( "file.separator", "/" ) + config.getString( "general.pack", "default" ) );
+		
+		if ( resourceLoader == null )
+			log.warning( "Could not load the resource pack!" );
 		
 		// Initalize the server for use in server or dual modes.
 		//server = new Server();
@@ -201,6 +209,11 @@ public class Main
 	public static FrameThreaded getFrame( int index )
 	{
 		return ( screens.containsKey( index ) ) ? screens.get( index ) : null;
+	}
+	
+	public static ResourceLoader getResourceLoader()
+	{
+		return resourceLoader;
 	}
 	
 	// A HashMap to keep track of all the screens loaded.

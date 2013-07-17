@@ -20,7 +20,6 @@ public class ScreenFrame extends JFrame
 {
 	private static final long serialVersionUID = -8415026498095675707L;
 	private JLabel loadingComponent = null;
-	private ResourceLoader pack;
 	
 	public ScreenFrame()
 	{
@@ -42,19 +41,9 @@ public class ScreenFrame extends JFrame
 	{
 		try
 		{
-			setLoadingText( "Loading the Resource Pack" );
-			
-			pack = ResourceLoader.buildLoader( ScreenFrame.class.getProtectionDomain().getCodeSource().getLocation().getPath() + System.getProperty( "file.separator", "/" ) + "packages" + System.getProperty( "file.separator", "/" ) + packSource );
-			
-			if ( pack == null )
-			{
-				showCritical( "Could not load the resource pack" );
-				return;
-			}
-			
-			setLoadingText( "Rendering Source" );
+			setLoadingText( "Rendering Source from Pack" );
 			CookSwing cookSwing = new CookSwing();
-			Container c = cookSwing.render( pack.getInputStream( "source.xml" ) );
+			Container c = cookSwing.render( Main.getResourceLoader().getInputStream( packSource ) );
 			
 			setLoadingText( "Finishing Up" );
 			c.setVisible( true );
@@ -104,7 +93,7 @@ public class ScreenFrame extends JFrame
 		loadingComponent.setFont( new Font( "Ubuntu", Font.BOLD, 36 ) );
 		loadingComponent.setOpaque( true );
 		loadingComponent.setBackground( Color.BLACK );
-		loadingComponent.setForeground( Color.RED );
+		loadingComponent.setForeground( Color.YELLOW );
 		setLoadingText( "" );
 		getContentPane().add( loadingComponent, BorderLayout.CENTER );
 	}
