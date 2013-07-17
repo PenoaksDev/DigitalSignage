@@ -1,6 +1,6 @@
 =DigitalSignage=
 
-An open source pure java 7 digital signage app. Loads digital signage displays an XML file.
+An open source pure digital signage app. Loads digital signage displays an XML file.
 
 =Configuration=
 *general -> mode
@@ -13,17 +13,18 @@ IP Address to listen from when in Server/Dual mode or the the IP Address to conn
 Same as the IP Address but only in reference to the port number.
 *general -> pack
 Defines what package runs this set of displays
-=Required Libraries=
-Annovention V0.1
-Apache Commons Lang V3.1
-CookSwing V1.5.1
-CookXML V3.0.2
-Guava V14.0.1
-JavaEE V16
-Java Assist
-JNA V3.5.2
-Platform V3.5.2
-Resin
-SnakeYAML V1.11
-VLCJ V2.4.0
-Zip4j V1.3.1
+=Required (Libraries)=
+*Java 1.7
+*Annovention V0.1
+*Apache Commons Lang V3.1
+*CookSwing V1.5.1
+*CookXML V3.0.2
+*Guava V14.0.1
+*JavaEE V16
+*Java Assist
+*JNA V3.5.2
+*Platform V3.5.2
+*Resin
+*SnakeYAML V1.11
+*VLCJ V2.4.0
+*Zip4j V1.3.1
