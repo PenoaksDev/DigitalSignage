@@ -42,103 +42,9 @@ public class VideoTag extends Canvas implements DSTag, ComponentListener, MediaP
 	}
 	
 	@Override
-	public void onCreate( Object parentObj, Element elm )
+	public void audioDeviceChanged( MediaPlayer mediaPlayer, String audioDevice )
 	{
-		int width = 1050;
-		int height = 600;
-		
-		if ( !elm.getAttribute( "width" ).isEmpty() )
-			width = Integer.parseInt( elm.getAttribute( "width" ) );
-		
-		if ( !elm.getAttribute( "height" ).isEmpty() )
-			height = Integer.parseInt( elm.getAttribute( "height" ) );
-		
-		setSize( width, height );
-		
-		for ( int i = 0; i < elm.getChildNodes().getLength(); i++ )
-		{
-			if ( elm.getChildNodes().item( i ).getNodeName().equals( "playlist" ) )
-			{
-				NodeList nl = elm.getChildNodes().item( i ).getChildNodes();
-				
-				for ( int ii = 0; ii < nl.getLength(); ii++ )
-				{
-					if ( nl.item( ii ).getNodeName().equals( "item" ) )
-					{
-						Main.getLogger().info( "Add playlist item: " + ( (Element) nl.item( ii ) ).getAttribute( "src" ) );
-						playlist.add( new VideoItem( ( (Element) nl.item( ii ) ).getAttribute( "src" ), ( (Element) nl.item( ii ) ).getAttribute( "method" ) ) );
-					}
-				}
-			}
-		}
-	}
-	
-	@Override
-	public void onEditFinished( Object parentObj, Element elm )
-	{
-		
-	}
-	
-	@Override
-	public String getName()
-	{
-		return "Video";
-	}
-	
-	public VideoItem sortAndNext()
-	{
-		Collections.sort( playlist, new VideoItemComparator() );
-		
-		VideoItem vi = playlist.get( 0 );
-		
-		if ( vi != null )
-			vi.addOne();
-		
-		return vi;
-	}
-	
-	public void playFromPlaylist()
-	{
-		try
-		{
-			VideoItem vi = sortAndNext();
-			
-			if ( vi != null )
-			{
-				// mediaPlayer.stop();
-				mediaPlayer.playMedia( "file://" + vi.getFile() );
-			}
-		}
-		catch ( Exception e )
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public void componentResized( ComponentEvent e )
-	{
-		Main.getLogger().info( "Video component has been resized!" );
-		
-		playFromPlaylist();
-	}
-	
-	@Override
-	public void componentMoved( ComponentEvent e )
-	{
-		Main.getLogger().info( "Video component has been moved!" );
-	}
-	
-	@Override
-	public void componentShown( ComponentEvent e )
-	{
-		Main.getLogger().info( "Video component has been made visible!" );
-	}
-	
-	@Override
-	public void componentHidden( ComponentEvent e )
-	{
-		Main.getLogger().info( "Video component has been made hidden!" );
+		// TODO New Empty Method
 	}
 	
 	@Override
@@ -151,6 +57,56 @@ public class VideoTag extends Canvas implements DSTag, ComponentListener, MediaP
 	public void buffering( MediaPlayer arg0, float arg1 )
 	{
 		Main.getLogger().info( "Video is buffering!" );
+	}
+	
+	@Override
+	public void componentHidden( ComponentEvent e )
+	{
+		Main.getLogger().info( "Video component has been made hidden!" );
+	}
+	
+	@Override
+	public void componentMoved( ComponentEvent e )
+	{
+		Main.getLogger().info( "Video component has been moved!" );
+	}
+	
+	@Override
+	public void componentResized( ComponentEvent e )
+	{
+		Main.getLogger().info( "Video component has been resized!" );
+		
+		playFromPlaylist();
+	}
+	
+	@Override
+	public void componentShown( ComponentEvent e )
+	{
+		Main.getLogger().info( "Video component has been made visible!" );
+	}
+	
+	@Override
+	public void corked( MediaPlayer mediaPlayer, boolean corked )
+	{
+		// TODO New Empty Method
+	}
+	
+	@Override
+	public void elementaryStreamAdded( MediaPlayer mediaPlayer, int type, int id )
+	{
+		// TODO New Empty Method
+	}
+	
+	@Override
+	public void elementaryStreamDeleted( MediaPlayer mediaPlayer, int type, int id )
+	{
+		// TODO New Empty Method
+	}
+	
+	@Override
+	public void elementaryStreamSelected( MediaPlayer mediaPlayer, int type, int id )
+	{
+		// TODO New Empty Method
 	}
 	
 	@Override
@@ -179,6 +135,12 @@ public class VideoTag extends Canvas implements DSTag, ComponentListener, MediaP
 	public void forward( MediaPlayer arg0 )
 	{
 		Main.getLogger().info( "Video has moved forwards!" );
+	}
+	
+	@Override
+	public String getName()
+	{
+		return "Video";
 	}
 	
 	@Override
@@ -230,9 +192,55 @@ public class VideoTag extends Canvas implements DSTag, ComponentListener, MediaP
 	}
 	
 	@Override
+	public void mediaSubItemTreeAdded( MediaPlayer mediaPlayer, libvlc_media_t item )
+	{
+		// TODO New Empty Method
+	}
+	
+	@Override
+	public void muted( MediaPlayer mediaPlayer, boolean muted )
+	{
+		// TODO New Empty Method
+	}
+	
+	@Override
 	public void newMedia( MediaPlayer arg0 )
 	{
 		Main.getLogger().info( "Video has new media!" );
+	}
+	
+	@Override
+	public void onCreate( Object parentObj, Element elm )
+	{
+		int width = 1050;
+		int height = 600;
+		
+		if ( !elm.getAttribute( "width" ).isEmpty() )
+			width = Integer.parseInt( elm.getAttribute( "width" ) );
+		
+		if ( !elm.getAttribute( "height" ).isEmpty() )
+			height = Integer.parseInt( elm.getAttribute( "height" ) );
+		
+		setSize( width, height );
+		
+		for ( int i = 0; i < elm.getChildNodes().getLength(); i++ )
+			if ( elm.getChildNodes().item( i ).getNodeName().equals( "playlist" ) )
+			{
+				NodeList nl = elm.getChildNodes().item( i ).getChildNodes();
+				
+				for ( int ii = 0; ii < nl.getLength(); ii++ )
+					if ( nl.item( ii ).getNodeName().equals( "item" ) )
+					{
+						Main.getLogger().info( "Add playlist item: " + ( (Element) nl.item( ii ) ).getAttribute( "src" ) );
+						playlist.add( new VideoItem( ( (Element) nl.item( ii ) ).getAttribute( "src" ), ( (Element) nl.item( ii ) ).getAttribute( "method" ) ) );
+					}
+			}
+	}
+	
+	@Override
+	public void onEditFinished( Object parentObj, Element elm )
+	{
+		
 	}
 	
 	@Override
@@ -254,6 +262,22 @@ public class VideoTag extends Canvas implements DSTag, ComponentListener, MediaP
 		mediaPlayer.play();
 	}
 	
+	public void playFromPlaylist()
+	{
+		try
+		{
+			VideoItem vi = sortAndNext();
+			
+			if ( vi != null )
+				// mediaPlayer.stop();
+				mediaPlayer.playMedia( "file://" + vi.getFile() );
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void playing( MediaPlayer arg0 )
 	{
@@ -267,52 +291,76 @@ public class VideoTag extends Canvas implements DSTag, ComponentListener, MediaP
 	}
 	
 	@Override
+	public void scrambledChanged( MediaPlayer mediaPlayer, int newScrambled )
+	{
+		// TODO New Empty Method
+	}
+	
+	@Override
 	public void seekableChanged( MediaPlayer arg0, int arg1 )
 	{
 		Main.getLogger().info( "Video has changed seekable!" );
 	}
-	
+
 	@Override
 	public void snapshotTaken( MediaPlayer arg0, String arg1 )
 	{
 		Main.getLogger().info( "Video has taken snapshot!" );
 	}
-	
-	@Override
-	public void subItemFinished( MediaPlayer arg0, int arg1 )
+
+	public VideoItem sortAndNext()
 	{
-		Main.getLogger().info( "Video has finished sub item!" );
+		Collections.sort( playlist, new VideoItemComparator() );
+		
+		VideoItem vi = playlist.get( 0 );
+		
+		if ( vi != null )
+			vi.addOne();
+		
+		return vi;
 	}
-	
-	@Override
-	public void subItemPlayed( MediaPlayer arg0, int arg1 )
-	{
-		Main.getLogger().info( "Video has played sub item!" );
-	}
-	
-	@Override
-	public void timeChanged( MediaPlayer arg0, long arg1 )
-	{
-		//Main.getLogger().info( "Video has changed time!" );
-	}
-	
-	@Override
-	public void titleChanged( MediaPlayer arg0, int arg1 )
-	{
-		Main.getLogger().info( "Video has changed title!" );
-	}
-	
-	@Override
-	public void videoOutput( MediaPlayer arg0, int arg1 )
-	{
-		Main.getLogger().info( "Video has video output!" );
-	}
-	
+
 	@Override
 	public void stopped( MediaPlayer arg0 )
 	{
 		Main.getLogger().info( "Media player has stopped!" );
 		
 		playFromPlaylist();
+	}
+
+	@Override
+	public void subItemFinished( MediaPlayer arg0, int arg1 )
+	{
+		Main.getLogger().info( "Video has finished sub item!" );
+	}
+
+	@Override
+	public void subItemPlayed( MediaPlayer arg0, int arg1 )
+	{
+		Main.getLogger().info( "Video has played sub item!" );
+	}
+
+	@Override
+	public void timeChanged( MediaPlayer arg0, long arg1 )
+	{
+		//Main.getLogger().info( "Video has changed time!" );
+	}
+
+	@Override
+	public void titleChanged( MediaPlayer arg0, int arg1 )
+	{
+		Main.getLogger().info( "Video has changed title!" );
+	}
+
+	@Override
+	public void videoOutput( MediaPlayer arg0, int arg1 )
+	{
+		Main.getLogger().info( "Video has video output!" );
+	}
+
+	@Override
+	public void volumeChanged( MediaPlayer mediaPlayer, float volume )
+	{
+		// TODO New Empty Method
 	}
 }

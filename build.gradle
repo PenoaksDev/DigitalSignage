@@ -1,0 +1,224 @@
+import java.text.SimpleDateFormat
+
+defaultTasks 'clean', 'build'
+
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+apply plugin: 'license'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'checkstyle'
+apply from: 'etc/publish.gradle'
+
+repositories
+{
+	jcenter()
+	maven
+	{ url "http://jenkins.chiorichan.com:8081/artifactory/" }
+	mavenCentral()
+}
+
+buildscript
+{
+	repositories
+	{
+		jcenter()
+		maven
+		{ url "http://jenkins.chiorichan.com:8081/artifactory/" }
+		mavenCentral()
+	}
+	
+	dependencies
+	{
+		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
+	}
+}
+
+def gitDescribe()
+{
+	try
+	{
+		// determine git-describe output
+		def stdout = new ByteArrayOutputStream()
+		exec
+		{
+			commandLine 'git', 'describe', '--always'
+			standardOutput = stdout
+		}
+		return stdout.toString().trim()
+	}
+	catch (e)
+	{
+		return "unknown"
+	}
+}
+
+def getVersionNumber()
+{
+	try
+	{
+		Properties props = new Properties()
+		props.load( new FileInputStream( new File( "./src/main/resources/co/applebloom/build.properties" ) ) )
+		
+		return props.getProperty( "project.version" )
+	}
+	catch ( e )
+	{
+		return 0
+	}
+}
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+def rawVersion = getVersionNumber() + '-' + gitDescribe()
+def jenkins_build = System.getenv("BUILD_NUMBER")
+def travis_build = System.getenv("TRAVIS_BUILD_NUMBER")
+def buildNumber = '0'
+
+group = 'co.applebloom'
+description = 'An open source pure Java digital signage app'
+
+if ( System.getenv("releaseBuild") != null )
+{
+	version = getVersionNumber()
+}
+else
+{
+	if ( jenkins_build != null )
+	{
+		version = rawVersion + '-jenkins-' + jenkins_build
+		buildNumber = jenkins_build
+	}
+	else if ( travis_build != null )
+	{
+		version = rawVersion + '-travis-' + travis_build
+		buildNumber = travis_build
+	}
+	else
+		version = rawVersion + '-dev'
+}
+
+distsDirName = 'dist'
+libsDirName = 'dist'
+
+compileJava
+{ options.encoding = 'UTF-8' }
+
+compileGroovy
+{ options.encoding = "UTF-8" }
+
+javadoc
+{ options.encoding = "UTF-8" }
+
+checkstyle
+{
+	configFile = file('etc/checkstyle.xml')
+	configProperties = ["basedir":project.projectDir]
+}
+
+eclipse
+{
+	project
+	{ name = 'DigitalSignage' }
+}
+
+license
+{
+	header rootProject.file('etc/HEADER')
+	ignoreFailures true
+	strictCheck true
+	mapping 'yaml', 'SCRIPT_STYLE'
+	mapping 'yml', 'SCRIPT_STYLE'
+	excludes (['**/*.md5', '**/*.yaml', '**/*.yml', '**/*.txt', '**/*.properties', '**/*.html', '**/*.htm'])
+	ext.year = Calendar.getInstance().get(Calendar.YEAR)
+	ext.name = 'Chiori Greene a.k.a. Chiori-chan'
+	ext.email = 'me@chiorichan.com'
+}
+
+subprojects
+{
+	apply plugin: 'java'
+	apply plugin: 'groovy'
+	apply plugin: 'eclipse'
+	
+	repositories
+	{ mavenCentral() }
+	
+	libsDirName = '../../build/dist'
+	
+	artifacts
+	{ archives jar }
+}
+
+dependencies
+{
+	compile group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
+	compile group: 'uk.co.caprica', name: 'vlcj', version: '3.9.0'
+	
+	compile files{ 'lib/cookswing/cookswing-1.5.1.jar' }
+	compile files{ 'lib/cookxml/cookxml-3.0.2.jar' }
+	
+	// Used for Programming Convinience
+	compile group: 'com.google.guava', name: 'guava', version: '18.0'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
+	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+	compile group: 'commons-net', name: 'commons-net', version: '3.3'
+	compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
+	
+	// Used to load configs
+	compile group: 'org.yaml', name: 'snakeyaml', version: '1.13'
+}
+
+shadowJar
+{
+	include("**/*");
+}
+
+jar
+{
+	manifest
+	{
+		attributes 'Implementation-Title': 'Digital Signage'
+		attributes 'Implementation-Version': version
+		attributes 'Implementation-Vendor': 'Chiori Greene a.k.a. Chiori-chan'
+		attributes 'Implementation-Vendor-Id': 'me@chiorichan.com'
+		attributes 'Main-Class': 'co.applebloom.apps.signage.Main'
+	}
+}
+
+task sourcesArchive(type: Zip){
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+task javadocArchive(type: Zip, dependsOn: 'javadoc'){
+	classifier = 'javadoc'
+	from javadoc.destinationDir
+}
+
+task writePropertiesFile {
+	doFirst {
+		SimpleDateFormat sdf = new SimpleDateFormat( "EEE, d MMM yyyy HH:mm:ss Z" )
+		
+		Properties props = new Properties()
+		props.load( new FileInputStream( file( "src/main/resources/co/applebloom/build.properties" ) ) )
+		props.setProperty("project.builtOn", sdf.format( new Date() ))
+		props.setProperty("project.build", buildNumber)
+		props.setProperty("project.version", version)
+		
+		File f2 = file("build/dist/build.properties")
+		File f3 = file("build/resources/main/co/applebloom/build.properties")
+		f2.parentFile.mkdirs()
+		f3.parentFile.mkdirs()
+		OutputStream out2 = new FileOutputStream( f2 )
+		OutputStream out3 = new FileOutputStream( f3 )
+		props.store(out2, "Digital Signage Build Properties File")
+		props.store(out3, "Digital Signage Build Properties File")
+	}
+}
+
+jar.dependsOn writePropertiesFile
+
+artifacts
+{ archives shadowJar, sourcesArchive, javadocArchive }

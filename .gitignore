@@ -11,3 +11,14 @@
 .DS_Store
 __MACOSX
 /bin
+/build/
+/.groovy/
+/.gradle/
+/.metadata/
+/manifest.mf
+/build/
+/nbproject/
+/*.yml
+/*.yaml
+/*.properties
+/*.log
